@@ -1,0 +1,119 @@
+1.获得一个Git仓库的方法
+1.1clone 一个仓库
+  git clione git://github.com/shimachao/FTPServer.git
+1.2初始化一个新的仓库
+ $ mkdir project
+ $ cd project
+ $ git init
+ 
+ 
+ 2.正常的工作流程
+ 2.1修改文件后将它们添加到暂存区中。（暂存区中的文件是下次要提交保存的文件）
+ $ git add filename
+ 
+ 2.2将暂存区中文件提交保存
+ $ git commit
+ 这会提示你输入本次提交的注释，你也可以直接用 -m参数一次性添加注释
+ $ git commit  -m "some note"
+ 
+ 2.3暂存，提交一次搞定
+ $ git commit -a
+ 这会把所有修改过的文件都添加到暂存区中，并提交。
+ 
+ 2.4新跟踪某个文件
+ $ git add filename
+ git add 命令根据目标对象的不同而有不同的效果，如果对象是一个跟踪过的文件，就把它暂存，如果是未跟踪过的文件就把它标记为已跟踪并暂存它。
+ 
+ 2.5获得当前项目的状态
+ $ git status
+ 运行这个命令后，git会列出哪些文件修改了但没暂存，哪些文件暂存了但提交，哪些文件没有跟踪。并给出暂存/提交/跟踪的命令提示。
+ 
+ 注意：只有处于暂存区的文件才会被git commit命令提交。所有修改过但未暂存或者都没跟踪的文件是不会提交的。
+
+2.5分支的使用
+Git中的分支本质上仅仅是一个指向commit对象的可变指针。所以管路分支代价特别小。Git会使用master作为分支的默认名字。分支指向最后一次commit（提交）对象的指针，它在每次提交时都会自动向前移动。
+
+2.5.1创建分支
+$ git branch branchname
+
+2.5.2切换到某个分支
+$ git checkout branchname
+
+2.5.3创建一个分支并切换到该分支工作
+$ git checkout -b branchname #-b参数的作用告诉git我要创建一个新分支并切换到该新分支工作
+
+2.5.4把一个分支testing合并到主分支master
+$ git checkout master    #先切换到主分支
+$ git merge testing      #把testing分支合并到主分支master
+分支合并有可能会使提交对象有多个祖先(只要合并时，一个分支所指对象不是另一个分支所指对象直接的祖先，这种情况就会发生)。
+有时候分支合并会有冲突(比如在两个分支中都修改了同一个文件，合并这两个分支时就会产生冲突),Git依赖你自己的选择。
+
+2.5.5某个分支已合并到另一个分支后删除某个分支.
+$ git branch -d testing  #把testing分支删除掉
+如果这样删除一个未合并过的分支会提示错误，因为这样会丢失数据。如果你确实想要删除该分支上的改动，可以用大写的-D选项强制删除
+
+2.5.6强制删除某个分支
+$ git branch -D testing
+
+
+2.5.7撤销一个合并
+如果你觉得你合并后的状态是一团乱麻，想把当前的修改都放弃，你可以用下面的命令回到合并之前的状态：
+$ git reset --hard HEAD
+
+或者你已经把合并后的代码提交，但还是想把它们撒销：
+$ git reset --hard ORIG_HEAD
+但是刚才这条命令在某些情况会很危险，如果你把一个已经被另一个分支合并的分支给删了，那么 以后在合并相关的分支时会出错。
+
+
+
+
+3.移除文件,不再跟踪
+3.1移除并删除某个文件
+$ git rm filename 
+这样会把文件从仓库中删除（亦即从暂存区域移除）。并从当前工作目录删除
+
+3.2如果删除之前修改过文件并且已经放到暂存区的话，就必须加强制删除选项 -f （force首字母）。
+$ git rm -f filename
+
+3.3把文件从仓库中删除，但仍然将它保存在当前工作目录中
+$ git rm --cached filename
+
+ps：不需要跟踪的文件最好记录在.gitignore文件中。
+
+3.4对文件重命名
+$ git mv file_old_name file_new_name
+运行上面一条命令相当于运行了下面三条命令
+$ git mv file_old_name file_new_name
+$ git rm file_old_name
+$ git add file_new_name
+不管用上面一条命令还是三条命令的方式，git都会视为一次文件重命名。
+
+3.5移动文件
+$ git mv file_old_path file_new_path	#重命名文件就是移动文件的特例
+
+4.1查看配置信息
+& git config --list
+
+5.忽略某些文件（不跟踪它们）
+在项目的顶层工作目录中添加一个叫".gitignore"的文件，来告诉Git系统要忽略 掉哪些文件，下面是文件内容的示例:
+#以'#' 开始的行，被视为注释.
+#忽略掉所有后缀名为o的中间文件
+*.o
+#忽略掉备份文件
+*~
+忽略掉makefile文件
+makeiflle
+Makefile
+#
+
+
+clone是从远程仓库上down下本地仓库+工作目录：本地仓库就是工作目录里.git这个目录
+commit是把工作目录的修改提交给本地仓库
+pull把远程仓库的修改取回到本地仓库+工作目录
+push把本地仓库的修改提交给远程仓库
+ 
+next to do is merge the two GitNotebook
+Git学习资源：
+Git历险记http://www.infoq.com/cn/git-adventures
+Git Community book:http://gitbook.liuhui998.com/index.html
+《Pro Git》中文版:http://blog.jobbole.com/25808/
